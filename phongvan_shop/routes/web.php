@@ -34,11 +34,17 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
  */
+
+/* The above code is defining routes for a PostController in a PHP framework. It is using the
+Route::controller method to define routes for different actions in the PostController class. */
 Route::controller(PostController::class)->group(function () {
     Route::get('bai-viet', 'index')->name('post.index');
     Route::get('bai-viet/thang-{id}', 'edit')->name('post.edit');
     Route::get('bai-viet/{id}', 'show')->name('post.show');
 });
+/* The above code is defining routes for a LinkController in a PHP framework, likely Laravel. It is
+using the Route::controller method to define multiple routes for different actions in the
+LinkController. Here is a breakdown of the routes: */
 Route::controller(LinkController::class)->group(function () {
     Route::get('yeu-thich', 'index')->name('links.index');
     Route::get('so-sanh', 'create')->name('link.create');
@@ -46,43 +52,66 @@ Route::controller(LinkController::class)->group(function () {
     Route::get('so-sanh/{id}', 'edit')->name('link.edit');
     Route::post('so-sanh/tim-kiem', 'store')->name('link.store');
 });
+/* The above code is defining routes in a PHP Laravel application using the Route facade. It is
+creating routes for a shared controller, with specific actions mapped to different HTTP methods and
+URIs. Here is a breakdown of the routes being defined: */
 Route::controller(SharedController::class)->group(function () {
     Route::get('lien-he', 'index')->name('contact.index');
     Route::get('gioi-thieu', 'create')->name('about.create');
     Route::post('them-ma-giam-gia', 'store')->name('shared.store');
     Route::get('tag/{id}', 'show')->name('shared.show');
 });
+/* The above code is defining routes for a PHP Laravel application. It is setting up routes for the
+MyAccountController class. */
 Route::controller(MyAccountController::class)->group(function () {
     Route::get('thong-tin-tai-khoan', 'index')->name('myaccount.index');
     Route::post('thong-tin-tai-khoan', 'store')->name('myaccount.store');
     Route::get('thong-tin-tai-khoan/don-hang/{id}', 'show')->name('myaccount.show');
 });
+/* The above code is defining routes for an authentication user controller in a PHP Laravel
+application. It is using the `Route::controller` method to define routes for the
+`AuthUserController` class. Inside the group function, it defines three routes: */
 Route::controller(AuthUserController::class)->group(function () {
     Route::get('dang-nhap', 'index')->name('authuser.signin.index');
     Route::get('dang-ky', 'index')->name('authuser.signup.index');
     Route::get('quen-mat-khau', 'create')->name('authuser.create');
 });
+/* The above code is defining routes for a social controller in a PHP Laravel application. It is
+setting up routes for Google authentication. The `Route::controller(SocialController::class)` line
+is defining the controller to be used for these routes. Inside the group function, there are two
+routes defined: */
 Route::controller(SocialController::class)->group(function () {
     Route::get('dang-nhap/google', 'index')->name('social.google.index');
     Route::get('google/callback', 'create')->name('social.google.create');
     // Route::get('dang-nhap/facebook', 'index')->name('social.facebook.index');
     // Route::get('facebook/callback', 'create')->name('social.facebook.create');
 });
+/* The above code is defining routes for a PHP Laravel application related to handling email
+functionalities. It is creating routes under the 'gui-mail' prefix and associating them with methods
+in the MailController class. Here is a summary of the routes defined: */
 Route::prefix('gui-mail')->controller(MailController::class)->group(function () {
     Route::get('loi-phan-hoi', 'index')->name('mail.index');
     Route::post('member/forget-password', 'store')->name('mail.store');
     Route::get('member/forget-password/{id}', 'show')->name('mail.show');
     Route::put('member/new-password/{id}', 'update')->name('mail.update');
 });
+/* The above code is defining routes in a PHP Laravel application. It is setting up routes for a
+CartController with middleware 'cors'. The routes defined are as follows:
+1. GET request to 'gio-hang' mapped to 'index' method in CartController
+2. GET request to 'thanh-toan' mapped to 'create' method in CartController
+3. POST request to 'thanh-toan' mapped to 'store' method in CartController
+4. GET request to 'xoa-gio-hang/{id}' mapped to 'show' method in CartController */
 Route::middleware('cors')->controller(CartController::class)->group(function () {
     Route::get('gio-hang', 'index')->name('cart.index');
     Route::get('thanh-toan', 'create')->name('cart.create');
     Route::post('thanh-toan', 'store')->name('cart.store');
     Route::get('xoa-gio-hang/{id}', 'show')->name('cart.show');
     Route::get('sua-gio-hang/{id}', 'edit');
-
     Route::get('paypal', 'getPaymentStatus')->name('status');
 });
+/* The above code is defining routes in a PHP Laravel application using the Route facade. It is
+creating routes for a HomeController class, with specific actions mapped to different HTTP methods
+and URIs. Here is a breakdown of the routes: */
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home.index');
     Route::get('san-pham', 'create')->name('all.create');
@@ -90,6 +119,7 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('them-gio-hang', 'store')->name('home.store');
     Route::get('/{id}', 'show')->name('home.show');
 });
+
 
 Route::prefix('admin')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
