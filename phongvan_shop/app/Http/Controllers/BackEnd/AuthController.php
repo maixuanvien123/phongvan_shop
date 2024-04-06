@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BackEnd;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,11 +77,17 @@ class AuthController extends Controller
                 DB::commit();
                 Auth::login($user);
 
-                return redirect()->route('home.index');
+                $orders = Order::select('a.id as cusid', 'a.userId', 'orders.*')
+                    ->join('order_customers as a', 'cusid', 'orders.cusId')
+                    ->where('a.userId', auth()->id())
+                    ->groupBy('orders.id')
+                    ->get();
+
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('message:' . $e->getMessage() . '---- line:' . $e->getLine());
             }
+            return view('User.my_account', compact('orders'));
         }
 
         if ($request->action == 'logout') {

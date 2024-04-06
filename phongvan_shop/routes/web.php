@@ -91,6 +91,7 @@ functionalities. It is creating routes under the 'gui-mail' prefix and associati
 in the MailController class. Here is a summary of the routes defined: */
 Route::prefix('gui-mail')->controller(MailController::class)->group(function () {
     Route::get('loi-phan-hoi', 'index')->name('mail.index');
+    Route::get('fake','create')->name('mail.create');
     Route::post('member/forget-password', 'store')->name('mail.store');
     Route::get('member/forget-password/{id}', 'show')->name('mail.show');
     Route::put('member/new-password/{id}', 'update')->name('mail.update');

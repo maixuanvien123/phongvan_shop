@@ -2,15 +2,30 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Mail\SendMail;
 use App\Models\User;
+use App\Models\Order;
+use App\Mail\SendMail;
+use App\Models\Product;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use App\Models\OrderCustomer;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class MailController extends Controller
 {
+    private $user, $product, $order, $orderDetail, $orderCustomer;
+    public function __construct(User $user, Product $product, Order $order, OrderDetail $orderDetail, OrderCustomer $orderCustomer)
+    {
+        $this->user = $user;
+        $this->product = $product;
+        $this->order = $order;
+        $this->orderDetail = $orderDetail;
+        $this->orderCustomer = $orderCustomer;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,7 +55,55 @@ class MailController extends Controller
      */
     public function create()
     {
+        for ($i = 0; $i < 100; $i++) {
 
+            $user = $this->user->inRandomOrder()->first();
+            $product = $this->product->inRandomOrder()->first();
+            $data['id'] = $product->id;
+            $data['qty'] = 2;
+            $data['name'] = $product->name;
+            $data['price'] = $product->price;
+            $data['weight'] = $product->qty;
+            $data['options']['image'] = $product->ProToGall->imageDefault;
+            $data['options']['slug'] = $product->slug;
+
+            Cart::add($data);
+
+            $subTotal = 0;
+            foreach (Cart::content() as $item) {
+                $subTotal += $item->price * $item->qty;
+            }
+            $total = $subTotal;
+
+            $customer = $this->orderCustomer->create([
+                'userId' => $user->id,
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'address' => fake()->address,
+                'note' => null,
+            ]);
+            $order = $this->order->create([
+                'cusId' => $customer->id,
+                'discountId' => null,
+                'status' => 1,
+                'totalPrice' => $total,
+                'debt' => $total,
+                'payment' => 0,
+            ]);
+            foreach (Cart::content() as $item) {
+                $this->orderDetail->create([
+                    'orderId' => $order->id,
+                    'proId' => $item->id,
+                    'qtyBuy' => $item->qty,
+                    'price' => $item->price,
+                ]);
+                $product = $this->product->find($item->id);
+                $qty = $product->qty - $item->qty;
+                $product->update(['qty' => $qty > 0 ? $qty : 0]);
+            }
+            Session::forget('cart');
+        }
+        return redirect()->route('home.index');
     }
 
     /**
