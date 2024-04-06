@@ -109,15 +109,20 @@
 @section('js')
 <script>
     $('#password, #re_password').on('keyup', function () {
-        if ($('#password').val() == "" && $('#re_password').val() == "") {
+        var password = $('#password').val();
+        var re_password = $('#re_password').val();
+
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
+
+        if (password == "" && re_password == "") {
             $('#submit-pass').prop('disabled', true);
             $('#message').hide();
-        } else if ($('#password').val() == $('#re_password').val()) {
+        } else if (password == re_password && password.match(passwordRegex)) {
             $('#submit-pass').prop('disabled', false);
             $('#message').hide();
         } else {
             $('#submit-pass').prop('disabled', true);
-            $('#message').show().html('Mật khẩu không khớp!').css('color', 'red');
+            $('#message').show().html('Mật khẩu không khớp hoặc không đủ mạnh!').css('color', 'red');
         }
     });
 </script>
